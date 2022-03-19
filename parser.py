@@ -5,22 +5,20 @@ import requests
 from bs4 import BeautifulSoup
 
 
-def get_lyrics(songname: str) -> Optional[str]:
+def _get_gurl(songname: str) -> Optional[str]:
     search_url = "https://google.com/search?"
     search_params = {"q": "+".join(songname.split() + ["текст"])}
-
     google_res = requests.get(search_url, search_params)
     if google_res.status_code != 200:
         return None
 
     search_page = BeautifulSoup(google_res.text, 'lxml')
-
     a_tag = search_page.find("a", {"href": re.compile("https://genius.com.")})
-    if not a_tag:
-        return None
-    first_qlink = a_tag["href"]  # type: ignore
+    return a_tag["href"] if a_tag else None  # type: ignore
 
-    genius_res = requests.get(f"https://google.com{first_qlink}")
+
+def _parse_genius_page(gurl: str) -> Optional[str]:
+    genius_res = requests.get(f"https://google.com{gurl}")
     if genius_res.status_code != 200:
         return None
 
@@ -30,17 +28,31 @@ def get_lyrics(songname: str) -> Optional[str]:
 
     text = ""
 
-    name_tag = genius_page.find("h1", {"class": re.compile("SongHeader")})
-    if name_tag:
-        name = name_tag.get_text()
-        artists_tag = name_tag.parent.a
-        if artists_tag:
-            artists = artists_tag.get_text()
-            text += f"{name} - {artists}\n\n"
+    title = _get_title(genius_page)
+    if title:
+        text += title + "\n\n"
 
     for container in lyrics_containers:
         text += container.get_text() + '\n'
 
+
+def _get_title(genius_page: BeautifulSoup) -> Optional[str]:
+    name_tag = genius_page.find("h1", {"class": re.compile("SongHeader")})
+    if name_tag:
+        name = name_tag.get_text()
+        artists_tag = name_tag.parent.a  # type: ignore
+        if artists_tag:
+            artists = artists_tag.get_text()
+            return f"{name} - {artists}"
+    return None
+
+
+def get_lyrics(songname: str) -> Optional[str]:
+    gurl = _get_gurl(songname)
+    if not gurl:
+        return None
+
+    text = _parse_genius_page(gurl)
     return text if text else None
 
 
