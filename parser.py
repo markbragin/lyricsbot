@@ -23,17 +23,19 @@ def _parse_genius_page(gurl: str) -> Optional[str]:
         return None
 
     genius_page = BeautifulSoup(genius_res.text.replace("<br/>", '\n'), 'lxml')
-    lyrics_containers = genius_page.find_all("div",
-            {"data-lyrics-container": "true"})
 
     text = ""
+
+    lyrics = _get_lyrics(genius_page)
+    if not lyrics:
+        return None
 
     title = _get_title(genius_page)
     if title:
         text += title + "\n\n"
 
-    for container in lyrics_containers:
-        text += container.get_text() + '\n'
+    text += lyrics
+    return text
 
 
 def _get_title(genius_page: BeautifulSoup) -> Optional[str]:
@@ -46,8 +48,16 @@ def _get_title(genius_page: BeautifulSoup) -> Optional[str]:
             return f"{name} - {artists}"
     return None
 
+def _get_lyrics(genius_page: BeautifulSoup) -> Optional[str]:
+    lyrics = ""
+    lyrics_containers = genius_page.find_all("div",
+            {"data-lyrics-container": "true"})
+    for container in lyrics_containers:
+        lyrics += container.get_text() + '\n'
+    return lyrics if lyrics else None
 
-def get_lyrics(songname: str) -> Optional[str]:
+
+def get_formatted_lyrics(songname: str) -> Optional[str]:
     gurl = _get_gurl(songname)
     if not gurl:
         return None
@@ -57,4 +67,4 @@ def get_lyrics(songname: str) -> Optional[str]:
 
 
 if __name__ == "__main__":
-    print(get_lyrics("kings dead"))
+    print(get_formatted_lyrics("kings dead"))
