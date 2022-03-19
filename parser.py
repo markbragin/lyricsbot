@@ -1,4 +1,4 @@
-from typing import Dict, Optional
+from typing import Optional
 import re
 
 import requests
@@ -29,6 +29,15 @@ def get_lyrics(songname: str) -> Optional[str]:
             {"data-lyrics-container": "true"})
 
     text = ""
+
+    name_tag = genius_page.find("h1", {"class": re.compile("SongHeader")})
+    if name_tag:
+        name = name_tag.get_text()
+        artists_tag = name_tag.parent.a
+        if artists_tag:
+            artists = artists_tag.get_text()
+            text += f"{name} - {artists}\n\n"
+
     for container in lyrics_containers:
         text += container.get_text() + '\n'
 
@@ -36,4 +45,4 @@ def get_lyrics(songname: str) -> Optional[str]:
 
 
 if __name__ == "__main__":
-    print(get_lyrics("kendrik lama dna"))
+    print(get_lyrics("kings dead"))
