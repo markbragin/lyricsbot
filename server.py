@@ -3,7 +3,7 @@ import os
 import telebot
 from telebot import types
 
-from parser import get_lyrics
+from parser import get_formatted_lyrics
 
 
 API_TOKEN = os.getenv("TELEGRAM_BOT_API_TOKEN")
@@ -18,9 +18,14 @@ def send_welcome(message: types.Message):
 
 @bot.message_handler(content_types=["text"])
 def send_lyrics(message: types.Message):
-    lyrics = get_lyrics(message.text)  # type: ignore
+    lyrics = get_formatted_lyrics(message.text)  # type: ignore
     if lyrics:
-        bot.send_message(message.chat.id, lyrics)
+        if len(lyrics) > 4000:
+            idx = lyrics.rfind('[', 0, 4096)
+            bot.send_message(message.chat.id, lyrics[0:idx])
+            bot.send_message(message.chat.id, lyrics[idx:])
+        else:
+            bot.send_message(message.chat.id, lyrics)
     else:
         bot.send_message(message.chat.id, "Not found")
 
