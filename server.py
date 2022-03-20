@@ -31,4 +31,5 @@ def send_lyrics(message: types.Message):
 
 
 if __name__ == '__main__':
-    bot.polling(non_stop=True, interval=0, skip_pending=True)
+
+    bot.polling(non_stop=True, interval=0, skip_pending=True, timeout=0)

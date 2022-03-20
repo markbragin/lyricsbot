@@ -8,7 +8,7 @@ from bs4 import BeautifulSoup
 
 def _get_gurl(songname: str) -> Optional[str]:
     search_url = "https://google.com/search?"
-    search_params = {"q": "+".join(songname.split() + ["текст"])}
+    search_params = {"q": "+".join(songname.split() + ["lyrics"])}
     google_res = requests.get(search_url, search_params)
     if google_res.status_code != 200:
         return None
