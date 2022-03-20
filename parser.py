@@ -1,3 +1,4 @@
+import sys
 from typing import Optional
 import re
 
@@ -67,4 +68,8 @@ def get_formatted_lyrics(songname: str) -> Optional[str]:
 
 
 if __name__ == "__main__":
-    print(get_formatted_lyrics("kings dead"))
+    if len(sys.argv) > 1:
+        print(sys.argv)
+        print(get_formatted_lyrics(" ".join(sys.argv[1:])))
+    else:
+        print("Pass song name as argument in cli")
