@@ -1,3 +1,4 @@
+import sys
 from typing import Optional
 import re
 
@@ -7,7 +8,7 @@ from bs4 import BeautifulSoup
 
 def _get_gurl(songname: str) -> Optional[str]:
     search_url = "https://google.com/search?"
-    search_params = {"q": "+".join(songname.split() + ["текст"])}
+    search_params = {"q": "+".join(songname.split() + ["lyrics"])}
     google_res = requests.get(search_url, search_params)
     if google_res.status_code != 200:
         return None
@@ -67,4 +68,8 @@ def get_formatted_lyrics(songname: str) -> Optional[str]:
 
 
 if __name__ == "__main__":
-    print(get_formatted_lyrics("kings dead"))
+    if len(sys.argv) > 1:
+        print(sys.argv)
+        print(get_formatted_lyrics(" ".join(sys.argv[1:])))
+    else:
+        print("Pass song name as argument in cli")
