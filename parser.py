@@ -36,6 +36,7 @@ def _parse_genius_page(gurl: str) -> Optional[str]:
         text += title + "\n\n"
 
     text += lyrics
+    text += f"\n\n{genius_res.url}"
     return text
 
 
@@ -69,7 +70,6 @@ def get_formatted_lyrics(songname: str) -> Optional[str]:
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:
-        print(sys.argv)
         print(get_formatted_lyrics(" ".join(sys.argv[1:])))
     else:
         print("Pass song name as argument in cli")
