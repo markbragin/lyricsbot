@@ -22,6 +22,7 @@ def _parse_genius_page(gurl: str) -> Optional[str]:
     genius_res = requests.get(f"https://google.com{gurl}")
     if genius_res.status_code != 200:
         return None
+    print(genius_res.url)
 
     genius_page = BeautifulSoup(genius_res.text.replace("<br/>", '\n'), 'lxml')
 
@@ -36,6 +37,7 @@ def _parse_genius_page(gurl: str) -> Optional[str]:
         text += title + "\n\n"
 
     text += lyrics
+    text += f"\n\n{genius_res.url}"
     return text
 
 
@@ -69,7 +71,6 @@ def get_formatted_lyrics(songname: str) -> Optional[str]:
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:
-        print(sys.argv)
         print(get_formatted_lyrics(" ".join(sys.argv[1:])))
     else:
         print("Pass song name as argument in cli")
