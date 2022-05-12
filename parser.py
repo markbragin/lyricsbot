@@ -6,7 +6,7 @@ import requests
 from bs4 import BeautifulSoup
 
 
-def _get_gurl(songname: str) -> Optional[str]:
+def _get_google_url(songname: str) -> Optional[str]:
     search_url = "https://google.com/search?"
     search_params = {"q": "+".join(songname.split() + ["lyrics"])}
     google_res = requests.get(search_url, search_params)
@@ -36,7 +36,7 @@ def _parse_genius_page(gurl: str) -> Optional[str]:
         text += title + "\n\n"
 
     text += lyrics
-    text += f"\n\n{genius_res.url}"
+    text += f"\n\nSource: {genius_res.url}"
     return text
 
 
@@ -60,7 +60,7 @@ def _get_lyrics(genius_page: BeautifulSoup) -> Optional[str]:
 
 
 def get_formatted_lyrics(songname: str) -> Optional[str]:
-    gurl = _get_gurl(songname)
+    gurl = _get_google_url(songname)
     if not gurl:
         return None
 
