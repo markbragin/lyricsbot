@@ -4,7 +4,7 @@ import telebot
 from telebot import types
 from loguru import logger
 
-import parser
+import lyrics_parser
 
 
 API_TOKEN = os.getenv("TELEGRAM_BOT_API_TOKEN")
@@ -21,14 +21,10 @@ def send_welcome(message: types.Message):
 @bot.message_handler(content_types=["text"])
 def send_lyrics(message: types.Message):
     logger.debug(f"{message.from_user.username} - {message.text}")
-    lyrics = parser.get_formatted_lyrics(message.text)  # type: ignore
+    lyrics = lyrics_parser.get_formatted_lyrics(str(message.text))
     if lyrics:
-        l_idx = 0
-        while len(lyrics[l_idx:]) >= 4000:
-            r_idx = lyrics.rfind('[', 0, 4000)
-            bot.send_message(message.chat.id, lyrics[l_idx:r_idx])
-            l_idx = r_idx
-        bot.send_message(message.chat.id, lyrics[l_idx:])
+        for part in lyrics:
+            bot.send_message(message.chat.id, part)
     else:
         bot.send_message(message.chat.id, "Not found")
 

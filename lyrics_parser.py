@@ -1,5 +1,5 @@
 import sys
-from typing import Optional
+from typing import List, Optional
 import re
 
 import requests
@@ -50,22 +50,34 @@ def _get_title(genius_page: BeautifulSoup) -> Optional[str]:
             return f"{name} - {artists}"
     return None
 
+
 def _get_lyrics(genius_page: BeautifulSoup) -> Optional[str]:
     lyrics = ""
     lyrics_containers = genius_page.find_all("div",
-            {"data-lyrics-container": "true"})
+                                             {"data-lyrics-container": "true"})
     for container in lyrics_containers:
         lyrics += container.get_text() + '\n'
     return lyrics if lyrics else None
 
 
-def get_formatted_lyrics(songname: str) -> Optional[str]:
+def _split_into_messages(text: str) -> List[str]:
+    messages = []
+    l_idx = 0
+    while len(text[l_idx:]) >= 4000:
+        r_idx = text.rfind('[', 0, 4000)
+        messages.append(text[l_idx:r_idx])
+        l_idx = r_idx
+    messages.append(text[l_idx:])
+    return messages
+
+
+def get_formatted_lyrics(songname: str) -> List[str]:
     gurl = _get_google_url(songname)
     if not gurl:
-        return None
+        return []
 
     text = _parse_genius_page(gurl)
-    return text if text else None
+    return _split_into_messages(text) if text else []
 
 
 if __name__ == "__main__":
