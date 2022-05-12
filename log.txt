@@ -1,3 +1,6 @@
 2022-05-12 12:26:56.856 | DEBUG    | __main__:send_lyrics:23 - ScHoo1boy_M - j.cole let go my hand
 2022-05-12 12:29:46.132 | DEBUG    | __main__:send_lyrics:23 - ScHoo1boy_M - j.cole hunger on a hillside
 2022-05-12 12:30:18.717 | DEBUG    | __main__:send_lyrics:23 - ScHoo1boy_M - j.cole hunger on a hillside
+2022-05-12 12:43:07.533 | DEBUG    | __main__:send_lyrics:23 - ScHoo1boy_M - j.cole amari
+2022-05-12 12:43:47.982 | DEBUG    | __main__:send_lyrics:23 - ScHoo1boy_M - kendrick lamar good kid maad city
+2022-05-12 12:44:01.594 | DEBUG    | __main__:send_lyrics:23 - ScHoo1boy_M - kendrick lamar mad city

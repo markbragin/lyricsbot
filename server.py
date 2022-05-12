@@ -23,12 +23,12 @@ def send_lyrics(message: types.Message):
     logger.debug(f"{message.from_user.username} - {message.text}")
     lyrics = parser.get_formatted_lyrics(message.text)  # type: ignore
     if lyrics:
-        if len(lyrics) > 4000:
-            idx = lyrics.rfind('[', 0, 4096)
-            bot.send_message(message.chat.id, lyrics[0:idx])
-            bot.send_message(message.chat.id, lyrics[idx:])
-        else:
-            bot.send_message(message.chat.id, lyrics)
+        l_idx = 0
+        while len(lyrics[l_idx:]) >= 4000:
+            r_idx = lyrics.rfind('[', 0, 4000)
+            bot.send_message(message.chat.id, lyrics[l_idx:r_idx])
+            l_idx = r_idx
+        bot.send_message(message.chat.id, lyrics[l_idx:])
     else:
         bot.send_message(message.chat.id, "Not found")
 
