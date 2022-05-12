@@ -4,12 +4,12 @@ import telebot
 from telebot import types
 from loguru import logger
 
-from parser import get_formatted_lyrics
+import parser
 
 
 API_TOKEN = os.getenv("TELEGRAM_BOT_API_TOKEN")
 bot = telebot.TeleBot(API_TOKEN)
-logger.add("users.txt")
+logger.add("log.txt")
 
 
 @bot.message_handler(commands=['start', 'help'])
@@ -21,7 +21,7 @@ def send_welcome(message: types.Message):
 @bot.message_handler(content_types=["text"])
 def send_lyrics(message: types.Message):
     logger.debug(f"{message.from_user.username} - {message.text}")
-    lyrics = get_formatted_lyrics(message.text)  # type: ignore
+    lyrics = parser.get_formatted_lyrics(message.text)  # type: ignore
     if lyrics:
         if len(lyrics) > 4000:
             idx = lyrics.rfind('[', 0, 4096)
