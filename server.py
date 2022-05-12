@@ -20,7 +20,7 @@ def send_welcome(message: types.Message):
 
 @bot.message_handler(content_types=["text"])
 def send_lyrics(message: types.Message):
-    logger.debug(f"{message.from_user.username} - {message.text}")
+    logger.debug(f"{message.from_user.username}")
     lyrics = lyrics_parser.get_formatted_lyrics(str(message.text))
     if lyrics:
         for part in lyrics:
