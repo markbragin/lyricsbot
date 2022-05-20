@@ -1,5 +1,5 @@
 import sys
-from typing import List, Optional
+from typing import Optional
 import re
 
 import requests
@@ -60,24 +60,13 @@ def _get_lyrics(genius_page: BeautifulSoup) -> Optional[str]:
     return lyrics if lyrics else None
 
 
-def _split_into_messages(text: str) -> List[str]:
-    messages = []
-    l_idx = 0
-    while len(text[l_idx:]) >= 4000:
-        r_idx = text.rfind('[', 0, 4000)
-        messages.append(text[l_idx:r_idx])
-        l_idx = r_idx
-    messages.append(text[l_idx:])
-    return messages
-
-
-def get_formatted_lyrics(songname: str) -> List[str]:
+def get_formatted_lyrics(songname: str) -> Optional[str]:
     gurl = _get_google_url(songname)
     if not gurl:
-        return []
+        return None
 
     text = _parse_genius_page(gurl)
-    return _split_into_messages(text) if text else []
+    return text if text else None
 
 
 if __name__ == "__main__":
