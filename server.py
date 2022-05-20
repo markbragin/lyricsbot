@@ -8,9 +8,12 @@ from loguru import logger
 import lyrics_parser
 
 
+logger.add("log.txt")
+
 API_TOKEN = os.getenv("TELEGRAM_BOT_API_TOKEN")
 bot = telebot.TeleBot(API_TOKEN)
-logger.add("log.txt")
+
+BUFFER_SIZE = 4096
 
 
 @bot.message_handler(commands=['start', 'help'])
@@ -34,10 +37,10 @@ def send_lyrics(message: types.Message):
 def _split_into_messages(text: str) -> List[str]:
     messages = []
     l_idx = 0
-    while len(text[l_idx:]) > 4096:
-        offset = text[l_idx:].rfind('[', 0, 4096)
+    while len(text[l_idx:]) > BUFFER_SIZE:
+        offset = text[l_idx:].rfind('[', 0, BUFFER_SIZE)
         if offset == -1 or offset == 0:
-            offset = text[l_idx:].rfind('\n', 0, 4096)
+            offset = text[l_idx:].rfind('\n', 0, BUFFER_SIZE)
         r_idx = l_idx + offset
         messages.append(text[l_idx:r_idx])
         l_idx = r_idx
