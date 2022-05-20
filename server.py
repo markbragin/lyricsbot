@@ -1,4 +1,5 @@
 import os
+from typing import List
 
 import telebot
 from telebot import types
@@ -23,10 +24,25 @@ def send_lyrics(message: types.Message):
     logger.debug(f"{message.from_user.username}")
     lyrics = lyrics_parser.get_formatted_lyrics(str(message.text))
     if lyrics:
-        for part in lyrics:
-            bot.send_message(message.chat.id, part)
+        text_messages = _split_into_messages(lyrics)
+        for item in text_messages:
+            bot.send_message(message.chat.id, item)
     else:
         bot.send_message(message.chat.id, "Not found")
+
+
+def _split_into_messages(text: str) -> List[str]:
+    messages = []
+    l_idx = 0
+    while len(text[l_idx:]) > 4096:
+        offset = text[l_idx:].rfind('[', 0, 4096)
+        if offset == -1 or offset == 0:
+            offset = text[l_idx:].rfind('\n', 0, 4096)
+        r_idx = l_idx + offset
+        messages.append(text[l_idx:r_idx])
+        l_idx = r_idx
+    messages.append(text[l_idx:])
+    return messages
 
 
 if __name__ == '__main__':
