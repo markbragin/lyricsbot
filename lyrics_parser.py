@@ -5,8 +5,10 @@ import re
 import requests
 from bs4 import BeautifulSoup
 
+# gurl - "/url?q=https..."
 
-def _get_google_url(songname: str) -> Optional[str]:
+
+def _get_first_genius_gurl(songname: str) -> Optional[str]:
     search_url = "https://google.com/search?"
     search_params = {"q": "+".join(songname.split() + ["lyrics"])}
     google_res = requests.get(search_url, search_params)
@@ -14,7 +16,7 @@ def _get_google_url(songname: str) -> Optional[str]:
         return None
 
     search_page = BeautifulSoup(google_res.text, 'lxml')
-    a_tag = search_page.find("a", {"href": re.compile("https://genius.com.")})
+    a_tag = search_page.find("a", {"href": re.compile("https://genius.com")})
     return a_tag["href"] if a_tag else None  # type: ignore
 
 
@@ -61,7 +63,7 @@ def _get_lyrics(genius_page: BeautifulSoup) -> Optional[str]:
 
 
 def get_formatted_lyrics(songname: str) -> Optional[str]:
-    gurl = _get_google_url(songname)
+    gurl = _get_first_genius_gurl(songname)
     if not gurl:
         return None
 
@@ -73,4 +75,4 @@ if __name__ == "__main__":
     if len(sys.argv) > 1:
         print(get_formatted_lyrics(" ".join(sys.argv[1:])))
     else:
-        print("Pass song name as argument in cli")
+        print("ERROR: Pass song name as argument\n")
