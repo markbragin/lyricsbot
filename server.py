@@ -3,17 +3,14 @@ from typing import List
 
 import telebot
 from telebot import types
-from loguru import logger
 
-import lyrics_parser
+from lyrics_parser import get_formatted_lyrics
 
-
-logger.add("log.txt")
 
 API_TOKEN = os.getenv("TELEGRAM_BOT_API_TOKEN")
-bot = telebot.TeleBot(API_TOKEN)
-
 BUFFER_SIZE = 4096
+
+bot = telebot.TeleBot(API_TOKEN)
 
 
 @bot.message_handler(commands=['start', 'help'])
@@ -24,8 +21,7 @@ def send_welcome(message: types.Message):
 
 @bot.message_handler(content_types=["text"])
 def send_lyrics(message: types.Message):
-    logger.debug(f"{message.from_user.username}")
-    lyrics = lyrics_parser.get_formatted_lyrics(str(message.text))
+    lyrics = get_formatted_lyrics(str(message.text))
     if lyrics:
         text_messages = _split_into_messages(lyrics)
         for item in text_messages:
