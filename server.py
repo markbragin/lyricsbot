@@ -25,7 +25,8 @@ def send_lyrics(message: types.Message):
     if lyrics:
         text_messages = _split_into_messages(lyrics)
         for item in text_messages:
-            bot.send_message(message.chat.id, item)
+            bot.send_message(message.chat.id, item,
+                             disable_web_page_preview=True)
     else:
         bot.send_message(message.chat.id, "Not found")
 
