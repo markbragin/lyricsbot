@@ -1,3 +1,4 @@
 .env
 log.txt
 *vim*
+__pycache__
