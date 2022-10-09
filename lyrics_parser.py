@@ -1,17 +1,21 @@
+import re
 import sys
 from typing import Optional
-import re
 
-import requests
 from bs4 import BeautifulSoup
+from fake_useragent import UserAgent
+import requests
 
 # gurl - "/url?q=https..."
+
+ua = UserAgent()
 
 
 def _get_first_genius_gurl(songname: str) -> Optional[str]:
     search_url = "https://google.com/search?"
     search_params = {"q": "+".join(songname.split() + ["lyrics"])}
-    google_res = requests.get(search_url, search_params)
+    headers = {'UserAgent': ua.random}
+    google_res = requests.get(search_url, search_params, headers=headers)
     if google_res.status_code != 200:
         return None
 
@@ -21,7 +25,8 @@ def _get_first_genius_gurl(songname: str) -> Optional[str]:
 
 
 def _parse_genius_page(gurl: str) -> Optional[str]:
-    genius_res = requests.get(f"https://google.com{gurl}")
+    headers = {'UserAgent': ua.random}
+    genius_res = requests.get(f"https://google.com{gurl}", headers=headers)
     if genius_res.status_code != 200:
         return None
 

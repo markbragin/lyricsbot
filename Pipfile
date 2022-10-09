@@ -9,6 +9,7 @@ requests = "*"
 lxml = "*"
 pytelegrambotapi = "*"
 loguru = "*"
+fake-useragent = "*"
 
 [dev-packages]
 
