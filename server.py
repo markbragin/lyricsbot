@@ -8,6 +8,11 @@ from lyrics_parser import get_formatted_lyrics
 
 
 API_TOKEN = os.getenv("TELEGRAM_BOT_API_TOKEN")
+
+if not API_TOKEN:
+    print("Set telegram bot api token as environment variable")
+    exit()
+
 BUFFER_SIZE = 4096
 
 bot = telebot.TeleBot(API_TOKEN)
