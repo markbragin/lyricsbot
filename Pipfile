@@ -10,7 +10,6 @@ lxml = "*"
 pytelegrambotapi = "*"
 loguru = "*"
 fake-useragent = "*"
-neovim = "*"
 
 [dev-packages]
 
