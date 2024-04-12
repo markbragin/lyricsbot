@@ -3,3 +3,4 @@ log.txt
 *vim*
 __pycache__
 Pipfile.lock
+.gitignore
