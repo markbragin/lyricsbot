@@ -53,4 +53,7 @@ def _split_into_valid_messages(text: str) -> list[str]:
 
 
 if __name__ == "__main__":
-    bot.polling(non_stop=True, interval=0, skip_pending=True, timeout=0)
+    try:
+        bot.polling(non_stop=True, interval=0, skip_pending=True, timeout=0)
+    except KeyboardInterrupt:
+        print("\nShutdown...")
