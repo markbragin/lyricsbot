@@ -2,7 +2,6 @@ from dataclasses import dataclass
 import re
 import sys
 import time
-from typing import Optional
 
 from bs4 import BeautifulSoup
 from fake_useragent import UserAgent
@@ -21,7 +20,7 @@ class Source:
     url: str
 
 
-def _get_first_genius_gurl(songname: str) -> Optional[str]:
+def _get_first_genius_gurl(songname: str) -> str | None:
     search_url = "https://google.com/search?"
     search_params = {"q": "+".join(songname.split() + ["lyrics"])}
 
@@ -42,7 +41,7 @@ def _get_first_genius_gurl(songname: str) -> Optional[str]:
     return a_tag["href"] if a_tag else None  # type: ignore
 
 
-def _get_genius_page(gurl: str) -> Optional[Source]:
+def _get_genius_page(gurl: str) -> Source | None:
     response = None
     tries = 0
     while response is None and tries <= RETRIES:
@@ -59,7 +58,7 @@ def _get_genius_page(gurl: str) -> Optional[Source]:
     return source
 
 
-def _get_title(genius_page: BeautifulSoup) -> Optional[str]:
+def _get_title(genius_page: BeautifulSoup) -> str | None:
     name_tag = genius_page.find("h1", {"class": re.compile("SongHeader")})
     if name_tag:
         name = name_tag.get_text()
@@ -70,7 +69,7 @@ def _get_title(genius_page: BeautifulSoup) -> Optional[str]:
     return None
 
 
-def _get_lyrics(genius_page: BeautifulSoup) -> Optional[str]:
+def _get_lyrics(genius_page: BeautifulSoup) -> str | None:
     lyrics = ""
     lyrics_containers = genius_page.find_all(
         "div", {"data-lyrics-container": "true"}
@@ -80,7 +79,7 @@ def _get_lyrics(genius_page: BeautifulSoup) -> Optional[str]:
     return lyrics if lyrics else None
 
 
-def get_formatted_answer(songname: str) -> Optional[str]:
+def get_formatted_answer(songname: str) -> str | None:
     genius_url = _get_first_genius_gurl(songname)
     if not genius_url:
         return None

@@ -1,5 +1,4 @@
 import os
-from typing import List
 
 import telebot
 from telebot import types
@@ -39,7 +38,7 @@ def send_lyrics(message: types.Message):
         bot.send_message(message.chat.id, "Not found")
 
 
-def _split_into_valid_messages(text: str) -> List[str]:
+def _split_into_valid_messages(text: str) -> list[str]:
     messages = []
     l_idx = 0
     while len(text[l_idx:]) > BUFFER_SIZE:
